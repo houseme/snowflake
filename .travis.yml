@@ -8,6 +8,8 @@ matrix:
   - go: 1.12.x
     env: GO111MODULE=on
   - go: 1.13.x
+  - go: 1.14.x
+  - go: 1.15.x
   - go: master
 
 before_install:
@@ -18,5 +20,5 @@ install:
   - go get github.com/golang/glog
 
 script:
-  - go test -v ./snowflake
+  - go test -v .
   - go run ./.example/main.go
