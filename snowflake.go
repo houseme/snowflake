@@ -11,37 +11,38 @@ import (
 const (
 	epoch             = int64(1577808000000)                           // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
 	timestampBits     = uint(41)                                       // 时间戳占用位数
-	datacenteridBits  = uint(5)                                        // 数据中心id所占位数
-	workeridBits      = uint(5)                                        // 机器id所占位数
+	datacenterIdBits  = uint(5)                                        // 数据中心id所占位数
+	workerIdBits      = uint(5)                                        // 机器id所占位数
 	sequenceBits      = uint(12)                                       // 序列所占的位数
 	timestampMax      = int64(-1 ^ (-1 << timestampBits))              // 时间戳最大值
-	datacenteridMax   = int64(-1 ^ (-1 << datacenteridBits))           // 支持的最大数据中心id数量
-	workeridMax       = int64(-1 ^ (-1 << workeridBits))               // 支持的最大机器id数量
+	datacenterIdMax   = int64(-1 ^ (-1 << datacenterIdBits))           // 支持的最大数据中心id数量
+	workerIdMax       = int64(-1 ^ (-1 << workerIdBits))               // 支持的最大机器id数量
 	sequenceMask      = int64(-1 ^ (-1 << sequenceBits))               // 支持的最大序列id数量
-	workeridShift     = sequenceBits                                   // 机器id左移位数
-	datacenteridShift = sequenceBits + workeridBits                    // 数据中心id左移位数
-	timestampShift    = sequenceBits + workeridBits + datacenteridBits // 时间戳左移位数
+	workerIdShift     = sequenceBits                                   // 机器id左移位数
+	datacenterIdShift = sequenceBits + workerIdBits                    // 数据中心id左移位数
+	timestampShift    = sequenceBits + workerIdBits + datacenterIdBits // 时间戳左移位数
 )
 
 type Snowflake struct {
 	sync.Mutex
 	timestamp    int64
-	workerid     int64
-	datacenterid int64
+	workerId     int64
+	datacenterId int64
 	sequence     int64
 }
 
-func NewSnowflake(datacenterid, workerid int64) (*Snowflake, error) {
-	if datacenterid < 0 || datacenterid > datacenteridMax {
-		return nil, fmt.Errorf("datacenterid must be between 0 and %d", datacenteridMax-1)
+// Initialize object
+func NewSnowflake(datacenterId, workerId int64) (*Snowflake, error) {
+	if datacenterId < 0 || datacenterId > datacenterIdMax {
+		return nil, fmt.Errorf("datacenterid must be between 0 and %d", datacenterIdMax-1)
 	}
-	if workerid < 0 || workerid > workeridMax {
-		return nil, fmt.Errorf("workerid must be between 0 and %d", workeridMax-1)
+	if workerId < 0 || workerId > workerIdMax {
+		return nil, fmt.Errorf("workerid must be between 0 and %d", workerIdMax-1)
 	}
 	return &Snowflake{
 		timestamp:    0,
-		datacenterid: datacenterid,
-		workerid:     workerid,
+		datacenterId: datacenterId,
+		workerId:     workerId,
 		sequence:     0,
 	}, nil
 }
@@ -70,15 +71,15 @@ func (s *Snowflake) NextVal() int64 {
 		return 0
 	}
 	s.timestamp = now
-	r := int64((t)<<timestampShift | (s.datacenterid << datacenteridShift) | (s.workerid << workeridShift) | (s.sequence))
+	r := int64((t)<<timestampShift | (s.datacenterId << datacenterIdShift) | (s.workerId << workerIdShift) | (s.sequence))
 	s.Unlock()
 	return r
 }
 
 // 获取数据中心ID和机器ID
-func GetDeviceID(sid int64) (datacenterid, workerid int64) {
-	datacenterid = (sid >> datacenteridShift) & datacenteridMax
-	workerid = (sid >> workeridShift) & workeridMax
+func GetDeviceID(sid int64) (datacenterId, workerId int64) {
+	datacenterId = (sid >> datacenterIdShift) & datacenterIdMax
+	workerId = (sid >> workerIdShift) & workerIdMax
 	return
 }
 
@@ -103,6 +104,6 @@ func GetGenTime(sid int64) (t string) {
 
 // 获取时间戳已使用的占比：范围（0.0 - 1.0）
 func GetTimestampStatus() (state float64) {
-	state = float64((time.Now().UnixNano()/1000000 - epoch)) / float64(timestampMax)
+	state = float64(time.Now().UnixNano()/1000000-epoch) / float64(timestampMax)
 	return
 }

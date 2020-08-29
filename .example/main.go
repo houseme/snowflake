@@ -7,11 +7,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GUAIK-ORG/go-snowflake/snowflake"
-
 	"github.com/golang/glog"
+
+	"github.com/housemecn/snowflake"
 )
 
+//generate 20k ids
 func TestLoad() {
 	var wg sync.WaitGroup
 	s, err := snowflake.NewSnowflake(int64(0), int64(0))
@@ -43,6 +44,7 @@ func TestLoad() {
 	glog.Infof("generate 20k ids elapsed: %v", elapsed)
 }
 
+//get five ids
 func TestGenID() {
 	s, err := snowflake.NewSnowflake(int64(0), int64(0))
 	if err != nil {
@@ -58,7 +60,7 @@ func TestGenID() {
 
 func main() {
 	flag.Set("alsologtostderr", "true")
-	flag.Set("log_dir", "/log")
+	flag.Set("log_dir", "./log")
 	flag.Set("v", "3")
 	flag.Parse()
 	defer func() {

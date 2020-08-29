@@ -19,4 +19,4 @@ install:
 
 script:
   - go test -v ./snowflake
-  - go run ./main.go
+  - go run ./.example/main.go

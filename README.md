@@ -1,6 +1,6 @@
 # ❄️ GO-Snowflake
 
-[![Build Status](https://travis-ci.com/GUAIK-ORG/go-snowflake.svg?branch=master)](https://travis-ci.com/GUAIK-ORG/go-snowflake)
+[![Build Status](https://travis-ci.com/housemecn/go-snowflake.svg?branch=master)](https://travis-ci.com/housemecn/go-snowflake)
 
 ## Snowflake简介
 
@@ -23,23 +23,23 @@ Twitter设计了Snowflake算法为分布式系统生成ID,Snowflake的id是int64
 ### 🕹 克隆 & 运行
 
 ```bash
-git clone https://github.com/GUAIK-ORG/go-snowflake.git
+git clone https://github.com/housemecn/go-snowflake.git
 
-go run main.go
+go run ./.example/main.go
 ```
 
 ### 💾 安装 & 导入
 
 ```bash
-go get github.com/GUAIK-ORG/go-snowflake
+go get github.com/housemecn/snowflake
 
 // 在项目中导入模块
-import "github.com/GUAIK-ORG/go-snowflake/snowflake"
+import "github.com/housemecn/snowflake"
 ```
 
 ### ⚠️注意事项
 
-* 在多实例（多个snowflake对象）的并发环境下，请确保每个实例（datacenterid，workerid）的唯一性，否则生成的ID可能冲突。
+* 在多实例（多个snowflake对象）的并发环境下，请确保每个实例（datacenterId，workerId）的唯一性，否则生成的ID可能冲突。
 
 ### 📊 测试
 
@@ -88,14 +88,14 @@ func TestLoad() {
 
 > 运行结果
 
-![load](https://gitee.com/GuaikOrg/go-snowflake/raw/master/docs/load.png)
+![load](https://github.com/housemecn/go-snowflake/raw/master/docs/load.png)
 
 ## 🗂 使用说明
 
 ### 创建Snowflake对象
 
 ```go
-// NewSnowflake(datacenterid, workerid int64) (*Snowflake, error)
+// NewSnowflake(datacenterId, workerId int64) (*Snowflake, error)
 // 参数1 (int64): 数据中心ID (可用范围:0-31)
 // 参数2 (int64): 机器ID    (可用范围:0-31)
 // 返回1 (*Snowflake): Snowflake对象 | nil
@@ -122,7 +122,7 @@ id := s.NextVal()
 
 ```go
 // ......
-// GetDeviceID(sid int64) (datacenterid, workerid int64)
+// GetDeviceID(sid int64) (datacenterId, workerId int64)
 // 参数1 (int64): 唯一ID
 // 返回1 (int64): 数据中心ID
 // 返回2 (int64): 机器ID
@@ -167,3 +167,8 @@ tStr := snowflake.GetGenTime(id)
 // 返回1 (float64): 时间戳字段使用占比（范围 0.0 - 1.0）
 status := snowflake.GetTimestampStatus()
 ```
+
+
+## License
+
+Go-snowflake is primarily distributed under the terms of both the Apache License (Version 2.0), thanks for [GUAIK-ORG](https://github.com/GUAIK-ORG/go-snowflake).

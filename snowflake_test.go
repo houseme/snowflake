@@ -72,8 +72,8 @@ func TestGetDeviceID(t *testing.T) {
 		t.Error(err)
 	}
 	val := s.NextVal()
-	datacenterid, workerid := GetDeviceID(val)
-	if datacenterid != 28 || workerid != 11 {
+	datacenterId, workerId := GetDeviceID(val)
+	if datacenterId != 28 || workerId != 11 {
 		t.Fail()
 	}
 }
