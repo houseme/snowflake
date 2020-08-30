@@ -3,7 +3,6 @@
 [![Go Doc](https://godoc.org/github.com/housemecn/snowflake?status.svg)](https://godoc.org/github.com/housemecn/snowflake)
 [![Build Status](https://travis-ci.com/housemecn/go-snowflake.svg?branch=master)](https://travis-ci.com/housemecn/go-snowflake)
 [![Go Report](https://goreportcard.com/badge/github.com/housemecn/snowflake?v=1)](https://goreportcard.com/report/github.com/housemecn/snowflake)
-[![Code Coverage](https://codecov.io/gh/housemecn/snowflake/branch/master/graph/badge.svg)](https://codecov.io/gh/housemecn/snowflake/branch/master)
 [![Production Ready](https://img.shields.io/badge/production-ready-blue.svg)](https://github.com/housemecn/snowflake)
 [![License](https://img.shields.io/github/license/housemecn/snowflake.svg?style=flat)](https://github.com/housemecn/snowflake)
 
