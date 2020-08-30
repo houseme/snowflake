@@ -40,7 +40,7 @@ func TestUnique(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 1000; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Add(-1)
@@ -104,7 +104,7 @@ func TestGenerateDuplicateID(t *testing.T) {
 	node, _ := NewSnowflake(1, 1)
 
 	var x, y ID
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 1000; i++ {
 		y = node.NextVal()
 		if x == y {
 			t.Errorf("x(%d) & y(%d) are the same", x, y)
@@ -119,7 +119,7 @@ func TestRace(t *testing.T) {
 	node, _ := NewSnowflake(1, 1)
 
 	go func() {
-		for i := 0; i < 1000000000; i++ {
+		for i := 0; i < 10000; i++ {
 
 			NewSnowflake(1, 1)
 		}

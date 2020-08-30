@@ -7,10 +7,6 @@ matrix:
     - go: 1.15.x
     - go: master
 
-before_install:
-  - if [[ "${GO111MODULE}" = "on" ]]; then go mod download; fi
-  - if [[ "${GO111MODULE}" = "on" ]]; then export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"; fi
-
 install:
   - go get github.com/golang/glog
   - go get -v .
