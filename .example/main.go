@@ -73,4 +73,21 @@ func main() {
 	// 获取时间戳字段已经使用的占比（0.0 - 1.0）
 	// 默认开始时间为：2020年01月01日 00:00:00
 	glog.Infof("Timestamp status: %f", snowflake.GetTimestampStatus())
+	s, _ := snowflake.NewSnowflake(int64(0), int64(0))
+	id := s.NextVal()
+	// Print out the ID in a few different ways.
+	fmt.Printf("Int64  ID: %d\n", id)
+	fmt.Printf("String ID: %s\n", id)
+	fmt.Printf("Base2  ID: %s\n", id.Base2())
+	fmt.Printf("Base64 ID: %s\n", id.Base64())
+
+	// Print out the ID's timestamp
+	fmt.Printf("ID Time  : %d\n", id.Time())
+
+	fmt.Println("ID GetTimestamp time ", snowflake.GetTimestamp(id))
+	fmt.Println("ID GetGenTimestamp time ", snowflake.GetGenTimestamp(id))
+	fmt.Println("ID GetGenTime time ", snowflake.GetGenTime(id))
+
+	// Generate and print, all in one.
+	fmt.Printf("ID       : %d\n", s.NextVal().Int64())
 }

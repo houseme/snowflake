@@ -171,4 +171,4 @@ status := snowflake.GetTimestampStatus()
 
 ## License
 
-Go-snowflake is primarily distributed under the terms of both the Apache License (Version 2.0), thanks for [GUAIK-ORG](https://github.com/GUAIK-ORG/go-snowflake).
+Go-snowflake is primarily distributed under the terms of both the Apache License (Version 2.0), thanks for [GUAIK-ORG](https://github.com/GUAIK-ORG/go-snowflake) and [Bwmarrin](https://github.com/bwmarrin/snowflake).
