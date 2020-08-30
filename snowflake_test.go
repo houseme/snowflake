@@ -74,8 +74,8 @@ func TestGetDeviceID(t *testing.T) {
 		t.Error(err)
 	}
 	val := s.NextVal()
-	datacenterId, workerId := GetDeviceID(int64(val))
-	if datacenterId != 28 || workerId != 11 {
+	datacenterID, workerID := GetDeviceID(int64(val))
+	if datacenterID != 28 || workerID != 11 {
 		t.Fail()
 	}
 }
@@ -440,108 +440,5 @@ func TestUnmarshalJSON(t *testing.T) {
 		if id != tc.expectedID {
 			t.Fatalf("Expected to get ID '%s' decoding JSON, but got '%s'", tc.expectedID, id)
 		}
-	}
-}
-
-// ****************************************************************************
-// Benchmark Methods
-
-func BenchmarkParseBase32(b *testing.B) {
-
-	node, _ := NewSnowflake(1, 1)
-	sf := node.NextVal()
-	b32i := sf.Base32()
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		ParseBase32([]byte(b32i))
-	}
-}
-func BenchmarkBase32(b *testing.B) {
-
-	node, _ := NewSnowflake(1, 1)
-	sf := node.NextVal()
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		sf.Base32()
-	}
-}
-func BenchmarkParseBase58(b *testing.B) {
-
-	node, _ := NewSnowflake(1, 1)
-	sf := node.NextVal()
-	b58 := sf.Base58()
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		ParseBase58([]byte(b58))
-	}
-}
-func BenchmarkBase58(b *testing.B) {
-
-	node, _ := NewSnowflake(1, 1)
-	sf := node.NextVal()
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		sf.Base58()
-	}
-}
-func BenchmarkGenerate(b *testing.B) {
-
-	node, _ := NewSnowflake(1, 1)
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_ = node.NextVal()
-	}
-}
-
-func BenchmarkGenerateMaxSequence(b *testing.B) {
-	node, _ := NewSnowflake(1, 1)
-
-	b.ReportAllocs()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_ = node.NextVal()
-	}
-}
-
-func BenchmarkUnmarshal(b *testing.B) {
-	// Generate the ID to unmarshal
-	node, _ := NewSnowflake(1, 1)
-	id := node.NextVal()
-	bytes, _ := id.MarshalJSON()
-
-	var id2 ID
-
-	b.ReportAllocs()
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_ = id2.UnmarshalJSON(bytes)
-	}
-}
-
-func BenchmarkMarshal(b *testing.B) {
-	// Generate the ID to marshal
-	node, _ := NewSnowflake(1, 1)
-	id := node.NextVal()
-
-	b.ReportAllocs()
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_, _ = id.MarshalJSON()
 	}
 }

@@ -13,108 +13,23 @@ import (
 )
 
 const (
-	epoch             = int64(1577808000000)                           // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
-	timestampBits     = uint(41)                                       // 时间戳占用位数
-	datacenterIdBits  = uint(5)                                        // 数据中心id所占位数
-	workerIdBits      = uint(5)                                        // 机器id所占位数
-	sequenceBits      = uint(12)                                       // 序列所占的位数
-	timestampMax      = int64(-1 ^ (-1 << timestampBits))              // 时间戳最大值
-	datacenterIdMax   = int64(-1 ^ (-1 << datacenterIdBits))           // 支持的最大数据中心id数量
-	workerIdMax       = int64(-1 ^ (-1 << workerIdBits))               // 支持的最大机器id数量
-	sequenceMask      = int64(-1 ^ (-1 << sequenceBits))               // 支持的最大序列id数量
-	workerIdShift     = sequenceBits                                   // 机器id左移位数
-	datacenterIdShift = sequenceBits + workerIdBits                    // 数据中心id左移位数
-	timestampShift    = sequenceBits + workerIdBits + datacenterIdBits // 时间戳左移位数
+	epoch             = int64(1577808000000)                           // Set start time (timestamp / millisecond): 2020-01-01 00, valid for 69 years
+	timestampBits     = uint(41)                                       // Number of digits occupied by timestamp
+	datacenterIDBits  = uint(5)                                        // Number of places occupied by id in the data center
+	workerIDBits      = uint(5)                                        // Number of bits occupied by machine id
+	sequenceBits      = uint(12)                                       // The number of digits occupied by the sequence
+	timestampMax      = int64(-1 ^ (-1 << timestampBits))              // Timestamp maximum
+	datacenterIDMax   = int64(-1 ^ (-1 << datacenterIDBits))           // Maximum number of data center id supported.
+	workerIDMax       = int64(-1 ^ (-1 << workerIDBits))               // Maximum number of machine id supported
+	sequenceMask      = int64(-1 ^ (-1 << sequenceBits))               // Maximum number of sequence id supported
+	workerIDShift     = sequenceBits                                   // Number of left shifts of machine id
+	datacenterIDShift = sequenceBits + workerIDBits                    // Data Center id left shift
+	timestampShift    = sequenceBits + workerIDBits + datacenterIDBits // Timestamp left shift
 )
 
 // An ID is a custom type used for a snowflake ID.  This is used so we can
 // attach methods onto the ID.
 type ID int64
-
-type Snowflake struct {
-	sync.Mutex
-	timestamp    int64
-	workerId     int64
-	datacenterId int64
-	sequence     int64
-}
-
-// Initialize object
-func NewSnowflake(datacenterId, workerId int64) (*Snowflake, error) {
-	if datacenterId < 0 || datacenterId > datacenterIdMax {
-		return nil, fmt.Errorf("datacenterid must be between 0 and %d", datacenterIdMax-1)
-	}
-	if workerId < 0 || workerId > workerIdMax {
-		return nil, fmt.Errorf("workerid must be between 0 and %d", workerIdMax-1)
-	}
-	return &Snowflake{
-		timestamp:    0,
-		datacenterId: datacenterId,
-		workerId:     workerId,
-		sequence:     0,
-	}, nil
-}
-
-func (s *Snowflake) NextVal() ID {
-	s.Lock()
-	now := time.Now().UnixNano() / 1000000 // 转毫秒
-	if s.timestamp == now {
-		// 当同一时间戳（精度：毫秒）下多次生成id会增加序列号
-		s.sequence = (s.sequence + 1) & sequenceMask
-		if s.sequence == 0 {
-			// 如果当前序列超出12bit长度，则需要等待下一毫秒
-			// 下一毫秒将使用sequence:0
-			for now <= s.timestamp {
-				now = time.Now().UnixNano() / 1000000
-			}
-		}
-	} else {
-		// 不同时间戳（精度：毫秒）下直接使用序列号：0
-		s.sequence = 0
-	}
-	t := now - epoch
-	if t > timestampMax {
-		s.Unlock()
-		glog.Errorf("epoch must be between 0 and %d", timestampMax-1)
-		return 0
-	}
-	s.timestamp = now
-	r := ID((t)<<timestampShift | (s.datacenterId << datacenterIdShift) | (s.workerId << workerIdShift) | (s.sequence))
-	s.Unlock()
-	return r
-}
-
-// 获取数据中心ID和机器ID
-func GetDeviceID(sid int64) (datacenterId, workerId int64) {
-	datacenterId = (sid >> datacenterIdShift) & datacenterIdMax
-	workerId = (sid >> workerIdShift) & workerIdMax
-	return
-}
-
-// 获取时间戳
-func GetTimestamp(sid ID) (timestamp int64) {
-	timestamp = (int64(sid) >> timestampShift) & timestampMax
-	return
-}
-
-// 获取创建ID时的时间戳
-func GetGenTimestamp(sid ID) (timestamp int64) {
-	timestamp = GetTimestamp(sid) + epoch
-	return
-}
-
-// 获取创建ID时的时间字符串(精度：秒)
-func GetGenTime(sid ID) (t string) {
-	// 需将GetGenTimestamp获取的时间戳/1000转换成秒
-	t = time.Unix(GetGenTimestamp(sid)/1000, 0).Format("2006-01-02 15:04:05")
-	return
-}
-
-// 获取时间戳已使用的占比：范围（0.0 - 1.0）
-func GetTimestampStatus() (state float64) {
-	state = float64(time.Now().UnixNano()/1000000-epoch) / float64(timestampMax)
-	return
-}
 
 const encodeBase32Map = "ybndrfg8ejkmcpqxot1uwisza345h769"
 
@@ -156,6 +71,96 @@ func init() {
 	for i := 0; i < len(encodeBase32Map); i++ {
 		decodeBase32Map[encodeBase32Map[i]] = byte(i)
 	}
+}
+
+//Snowflake is a custom type
+type Snowflake struct {
+	sync.Mutex
+	timestamp    int64
+	workerID     int64
+	datacenterID int64
+	sequence     int64
+}
+
+//NewSnowflake returns a new snowflake node that can be used to generate snowflake
+func NewSnowflake(datacenterID, workerID int64) (*Snowflake, error) {
+	if datacenterID < 0 || datacenterID > datacenterIDMax {
+		return nil, fmt.Errorf("datacenterid must be between 0 and %d", datacenterIDMax-1)
+	}
+	if workerID < 0 || workerID > workerIDMax {
+		return nil, fmt.Errorf("workerid must be between 0 and %d", workerIDMax-1)
+	}
+	return &Snowflake{
+		timestamp:    0,
+		datacenterID: datacenterID,
+		workerID:     workerID,
+		sequence:     0,
+	}, nil
+}
+
+// NextVal creates and returns a unique snowflake ID
+// To help guarantee uniqueness
+// - Make sure your system is keeping accurate system time
+// - Make sure you never have multiple nodes running with the same node ID
+func (s *Snowflake) NextVal() ID {
+	s.Lock()
+	now := time.Now().UnixNano() / 1000000 // 转毫秒
+	if s.timestamp == now {
+		// When id is generated multiple times under the same timestamp (precision: millisecond), the sequence number will be increased.
+		s.sequence = (s.sequence + 1) & sequenceMask
+		if s.sequence == 0 {
+			// If the current sequence exceeds the 12bit length, you need to wait for the next millisecond
+			// Sequence:0 will be used in the next millisecond
+			for now <= s.timestamp {
+				now = time.Now().UnixNano() / 1000000
+			}
+		}
+	} else {
+		// Use the serial number directly under different timestamps (precision: milliseconds): 0
+		s.sequence = 0
+	}
+	t := now - epoch
+	if t > timestampMax {
+		s.Unlock()
+		glog.Errorf("epoch must be between 0 and %d", timestampMax-1)
+		return 0
+	}
+	s.timestamp = now
+	r := ID((t)<<timestampShift | (s.datacenterID << datacenterIDShift) | (s.workerID << workerIDShift) | (s.sequence))
+	s.Unlock()
+	return r
+}
+
+// GetDeviceID returns an int64 of the snowflake center ID and machine ID number
+func GetDeviceID(sid int64) (datacenterID, workerID int64) {
+	datacenterID = (sid >> datacenterIDShift) & datacenterIDMax
+	workerID = (sid >> workerIDShift) & workerIDMax
+	return
+}
+
+//GetTimestamp returns an int64 unix timestamp in milliseconds of the snowflake ID time
+func GetTimestamp(sid ID) (timestamp int64) {
+	timestamp = (int64(sid) >> timestampShift) & timestampMax
+	return
+}
+
+// GetGenTimestamp returns Get the timestamp when the ID was created
+func GetGenTimestamp(sid ID) (timestamp int64) {
+	timestamp = GetTimestamp(sid) + epoch
+	return
+}
+
+// GetGenTime returns Gets the time string when the ID was created (precision: seconds)
+func GetGenTime(sid ID) (t string) {
+	// The timestamp / 1000 obtained by GetGenTimestamp needs to be converted into seconds
+	t = time.Unix(GetGenTimestamp(sid)/1000, 0).Format("2006-01-02 15:04:05")
+	return
+}
+
+// GetTimestampStatus returns an float64 unix timestamp in milliseconds of the snowflake ID time Get the percentage of timestamps used: range (0.0-1.0)
+func GetTimestampStatus() (state float64) {
+	state = float64(time.Now().UnixNano()/1000000-epoch) / float64(timestampMax)
+	return
 }
 
 // Int64 returns an int64 of the snowflake ID
