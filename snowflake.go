@@ -120,7 +120,7 @@ func (s *Snowflake) NextVal() ID {
 	t := now - epoch
 	if t > timestampMax {
 		s.Unlock()
-		fmt.Errorf("epoch must be between 0 and %d", timestampMax-1)
+		fmt.Printf("epoch must be between 0 and %d", timestampMax-1)
 		return 0
 	}
 	s.timestamp = now
