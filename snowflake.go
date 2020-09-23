@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/golang/glog"
 )
 
 const (
@@ -122,7 +120,7 @@ func (s *Snowflake) NextVal() ID {
 	t := now - epoch
 	if t > timestampMax {
 		s.Unlock()
-		glog.Errorf("epoch must be between 0 and %d", timestampMax-1)
+		fmt.Errorf("epoch must be between 0 and %d", timestampMax-1)
 		return 0
 	}
 	s.timestamp = now
