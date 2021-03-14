@@ -67,7 +67,7 @@ func main() {
 	TestLoad()
 	// 获取时间戳字段已经使用的占比（0.0 - 1.0）
 	// 默认开始时间为：2020年01月01日 00:00:00
-	fmt.Printf("Timestamp status: %f", snowflake.GetTimestampStatus())
+	fmt.Printf("Timestamp status: %f\n", snowflake.GetTimestampStatus())
 	s, _ := snowflake.NewSnowflake(int64(0), int64(0))
 	id := s.NextVal()
 	// Print out the ID in a few different ways.

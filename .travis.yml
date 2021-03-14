@@ -10,6 +10,7 @@ matrix:
     - go: 1.13.x
     - go: 1.14.x
     - go: 1.15.x
+    - go: 1.16.x
     - go: master
 
 before_install:
@@ -17,7 +18,6 @@ before_install:
   - if [[ "${GO111MODULE}" = "on" ]]; then export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"; fi
 
 install:
-  - go get github.com/golang/glog
   - go get -v .
   - go get -v golang.org/x/lint/golint
 
