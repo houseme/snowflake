@@ -51,9 +51,9 @@ import "github.com/housemecn/snowflake"
 
 | 参数 | 配置 |
 |---|---|
-| OS | MacBook Pro (13-inch, Late 2016, Four Thunderbolt 3 Ports)|
-| CPU | 2.9 GHz 双核Intel Core i5 |
-| RAM | 8 GB 2133 MHz LPDDR3 |
+| OS | MacBook Pro (16-inch, 2019)|
+| CPU | Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz |
+| RAM | 64 GB 2667 MHz DDR4 |
 
 > 测试代码
 
@@ -92,7 +92,7 @@ func TestLoad() {
 
 > 运行结果
 
-![load](https://github.com/housemecn/go-snowflake/raw/master/docs/load.png)
+![load](https://github.com/housemecn/go-snowflake/raw/master/docs/WX20210314-234124@2x.png)
 
 ## 🗂 使用说明
 
@@ -171,7 +171,22 @@ tStr := snowflake.GetGenTime(id)
 // 返回1 (float64): 时间戳字段使用占比（范围 0.0 - 1.0）
 status := snowflake.GetTimestampStatus()
 ```
+### Performance
 
+With default settings, this snowflake generator should be sufficiently fast
+enough on most systems to generate 4096 unique ID's per millisecond. This is
+the maximum that the snowflake ID format supports. That is, around 243-244
+nanoseconds per operation.
+
+Since the snowflake generator is single threaded the primary limitation will be
+the maximum speed of a single processor on your system.
+
+To benchmark the generator on your system run the following command inside the
+snowflake package directory.
+
+```sh
+go test -run=^$ -bench=.
+```
 
 ## License
 

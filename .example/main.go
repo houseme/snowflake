@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"runtime"
 	"sync"
@@ -13,9 +12,9 @@ import (
 // TestLoad generate 20k ids
 func TestLoad() {
 	var wg sync.WaitGroup
-	s, err := snowflake.NewSnowflake(int64(0), int64(0))
+	s, err := snowflake.NewSnowflake(int64(1), int64(1))
 	if err != nil {
-		fmt.Errorf("snowflake.NewSnowflake reason: %s", err)
+		fmt.Printf("snowflake.NewSnowflake reason: %s \n", err)
 		return
 	}
 	var check sync.Map
@@ -27,44 +26,40 @@ func TestLoad() {
 			val := s.NextVal()
 			if _, ok := check.Load(val); ok {
 				// id冲突检查
-				fmt.Errorf("error#unique: val:%v", val)
+				fmt.Printf("error#unique: val:%v \n", val)
 				return
 			}
 			check.Store(val, 0)
 			if val == 0 {
-				fmt.Errorf("error")
+				fmt.Printf("error")
 				return
 			}
 		}()
 	}
 	wg.Wait()
 	elapsed := time.Since(t1)
-	fmt.Errorf("generate 20k ids elapsed: %v", elapsed)
+	fmt.Printf("generate 20k ids elapsed: %v \n", elapsed)
 }
 
 // TestGenID get five ids
 func TestGenID() {
 	s, err := snowflake.NewSnowflake(int64(0), int64(0))
 	if err != nil {
-		fmt.Errorf("snowflake.NewSnowflake reason: %s", err)
+		fmt.Printf("snowflake.NewSnowflake reason: %s \n", err)
 		return
 	}
+	t1 := time.Now()
 	for i := 0; i < 5; i++ {
 		val := s.NextVal()
-		fmt.Errorf("id: %v, time:%v", val, snowflake.GetGenTime(val))
+		fmt.Printf("id: %v, time:%v \n", val, snowflake.GetGenTime(val))
 	}
-
+	elapsed := time.Since(t1)
+	fmt.Printf("generate 5k ids end  elapsed: %v \n", elapsed)
 }
 
 func main() {
-	flag.Set("alsologtostderr", "true")
-	flag.Set("log_dir", "./log")
-	flag.Set("v", "3")
-	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	TestGenID()
-	// 测试生成20万id的速度
-	TestLoad()
 	// 获取时间戳字段已经使用的占比（0.0 - 1.0）
 	// 默认开始时间为：2020年01月01日 00:00:00
 	fmt.Printf("Timestamp status: %f\n", snowflake.GetTimestampStatus())
@@ -85,4 +80,9 @@ func main() {
 
 	// Generate and print, all in one.
 	fmt.Printf("ID       : %d\n", s.NextVal().Int64())
+
+	fmt.Println("TestLoad start time:", time.Now())
+	// 测试生成20万id的速度
+	TestLoad()
+	fmt.Println("TestLoad end time:", time.Now())
 }
