@@ -350,3 +350,23 @@ func (f *ID) UnmarshalJSON(b []byte) error {
 func (f ID) Time() int64 {
 	return (int64(f) >> timestampShift) + epoch
 }
+
+// GetTimestampMax Timestamp maximum
+func GetTimestampMax() int64 {
+	return timestampMax
+}
+
+// GetDatacenterIDMax Maximum number of data center id supported.
+func GetDatacenterIDMax() int64 {
+	return datacenterIDMax
+}
+
+// GetWorkerIDMax Maximum number of machine id supported
+func GetWorkerIDMax() int64 {
+	return workerIDMax
+}
+
+// GetSequenceMask Maximum number of sequence id supported
+func GetSequenceMask() int64 {
+	return sequenceMask
+}
