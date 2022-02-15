@@ -1,7 +1,7 @@
 # ❄️ Go-Snowflake
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/houseme/snowflake.svg)](https://pkg.go.dev/github.com/houseme/snowflake)
-[![GoFrame CI](https://github.com/houseme/snowflake/actions/workflows/gf.yml/badge.svg)](https://github.com/houseme/snowflake/actions/workflows/gf.yml)
+[![GoFrame CI](https://github.com/houseme/snowflake/actions/workflows/go.yml/badge.svg)](https://github.com/houseme/snowflake/actions/workflows/gf.yml)
 [![Go Report](https://goreportcard.com/badge/github.com/houseme/snowflake?v=1)](https://goreportcard.com/report/github.com/houseme/snowflake)
 [![Production Ready](https://img.shields.io/badge/production-ready-blue.svg)](https://github.com/housemecn/snowflake)
 [![License](https://img.shields.io/github/license/housemecn/snowflake.svg?style=flat)](https://github.com/housemecn/snowflake)
