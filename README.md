@@ -1,4 +1,9 @@
-# ❄️ Go-Snowflake
+# ❄️ Go Snowflake
+
+
+### A Snowflake Generator for Go
+### A simple to use Go (golang) package to generate or parse Twitter snowflake IDs
+
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/houseme/snowflake.svg)](https://pkg.go.dev/github.com/houseme/snowflake)
 [![GoFrame CI](https://github.com/houseme/snowflake/actions/workflows/go.yml/badge.svg)](https://github.com/houseme/snowflake/actions/workflows/gf.yml)
