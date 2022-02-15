@@ -71,7 +71,7 @@ func init() {
 	}
 }
 
-//Snowflake is a custom type
+// Snowflake is a custom type
 type Snowflake struct {
 	sync.Mutex
 	timestamp    int64
@@ -80,7 +80,7 @@ type Snowflake struct {
 	sequence     int64
 }
 
-//NewSnowflake returns a new snowflake node that can be used to generate snowflake
+// NewSnowflake returns a new snowflake node that can be used to generate snowflake
 func NewSnowflake(datacenterID, workerID int64) (*Snowflake, error) {
 	if datacenterID < 0 || datacenterID > datacenterIDMax {
 		return nil, fmt.Errorf("datacenterid must be between 0 and %d", datacenterIDMax-1)
@@ -136,7 +136,7 @@ func GetDeviceID(sid int64) (datacenterID, workerID int64) {
 	return
 }
 
-//GetTimestamp returns an int64 unix timestamp in milliseconds of the snowflake ID time
+// GetTimestamp returns an int64 unix timestamp in milliseconds of the snowflake ID time
 func GetTimestamp(sid ID) (timestamp int64) {
 	timestamp = (int64(sid) >> timestampShift) & timestampMax
 	return
@@ -162,8 +162,8 @@ func GetTimestampStatus() (state float64) {
 }
 
 // Int64 returns an int64 of the snowflake ID
-func (f ID) Int64() int64 {
-	return int64(f)
+func (sid ID) Int64() int64 {
+	return int64(sid)
 }
 
 // ParseInt64 converts an int64 into a snowflake ID
@@ -172,20 +172,20 @@ func ParseInt64(id int64) ID {
 }
 
 // String returns a string of the snowflake ID
-func (f ID) String() string {
-	return strconv.FormatInt(int64(f), 10)
+func (sid ID) String() string {
+	return strconv.FormatInt(int64(sid), 10)
 }
 
 // ParseString converts a string into a snowflake ID
-func ParseString(id string) (ID, error) {
-	i, err := strconv.ParseInt(id, 10, 64)
+func ParseString(sid string) (ID, error) {
+	i, err := strconv.ParseInt(sid, 10, 64)
 	return ID(i), err
 
 }
 
 // Base2 returns a string base2 of the snowflake ID
-func (f ID) Base2() string {
-	return strconv.FormatInt(int64(f), 2)
+func (sid ID) Base2() string {
+	return strconv.FormatInt(int64(sid), 2)
 }
 
 // ParseBase2 converts a Base2 string into a snowflake ID
@@ -198,18 +198,18 @@ func ParseBase2(id string) (ID, error) {
 // to base58, allowing it to create an even smaller result string.
 // NOTE: There are many different base32 implementations so becareful when
 // doing any interoperation.
-func (f ID) Base32() string {
+func (sid ID) Base32() string {
 
-	if f < 32 {
-		return string(encodeBase32Map[f])
+	if sid < 32 {
+		return string(encodeBase32Map[sid])
 	}
 
 	b := make([]byte, 0, 12)
-	for f >= 32 {
-		b = append(b, encodeBase32Map[f%32])
-		f /= 32
+	for sid >= 32 {
+		b = append(b, encodeBase32Map[sid%32])
+		sid /= 32
 	}
-	b = append(b, encodeBase32Map[f])
+	b = append(b, encodeBase32Map[sid])
 
 	for x, y := 0, len(b)-1; x < y; x, y = x+1, y-1 {
 		b[x], b[y] = b[y], b[x]
@@ -236,8 +236,8 @@ func ParseBase32(b []byte) (ID, error) {
 }
 
 // Base36 returns a base36 string of the snowflake ID
-func (f ID) Base36() string {
-	return strconv.FormatInt(int64(f), 36)
+func (sid ID) Base36() string {
+	return strconv.FormatInt(int64(sid), 36)
 }
 
 // ParseBase36 converts a Base36 string into a snowflake ID
@@ -247,18 +247,18 @@ func ParseBase36(id string) (ID, error) {
 }
 
 // Base58 returns a base58 string of the snowflake ID
-func (f ID) Base58() string {
+func (sid ID) Base58() string {
 
-	if f < 58 {
-		return string(encodeBase58Map[f])
+	if sid < 58 {
+		return string(encodeBase58Map[sid])
 	}
 
 	b := make([]byte, 0, 11)
-	for f >= 58 {
-		b = append(b, encodeBase58Map[f%58])
-		f /= 58
+	for sid >= 58 {
+		b = append(b, encodeBase58Map[sid%58])
+		sid /= 58
 	}
-	b = append(b, encodeBase58Map[f])
+	b = append(b, encodeBase58Map[sid])
 
 	for x, y := 0, len(b)-1; x < y; x, y = x+1, y-1 {
 		b[x], b[y] = b[y], b[x]
@@ -283,8 +283,8 @@ func ParseBase58(b []byte) (ID, error) {
 }
 
 // Base64 returns a base64 string of the snowflake ID
-func (f ID) Base64() string {
-	return base64.StdEncoding.EncodeToString(f.Bytes())
+func (sid ID) Base64() string {
+	return base64.StdEncoding.EncodeToString(sid.Bytes())
 }
 
 // ParseBase64 converts a base64 string into a snowflake ID
@@ -297,9 +297,9 @@ func ParseBase64(id string) (ID, error) {
 
 }
 
-// Bytes returns a byte slice of the snowflake ID
-func (f ID) Bytes() []byte {
-	return []byte(f.String())
+// Bytes return a byte slice of the snowflake ID
+func (sid ID) Bytes() []byte {
+	return []byte(sid.String())
 }
 
 // ParseBytes converts a byte slice into a snowflake ID
@@ -310,9 +310,9 @@ func ParseBytes(id []byte) (ID, error) {
 
 // IntBytes returns an array of bytes of the snowflake ID, encoded as a
 // big endian integer.
-func (f ID) IntBytes() [8]byte {
+func (sid ID) IntBytes() [8]byte {
 	var b [8]byte
-	binary.BigEndian.PutUint64(b[:], uint64(f))
+	binary.BigEndian.PutUint64(b[:], uint64(sid))
 	return b
 }
 
@@ -323,16 +323,16 @@ func ParseIntBytes(id [8]byte) ID {
 }
 
 // MarshalJSON returns a json byte array string of the snowflake ID.
-func (f ID) MarshalJSON() ([]byte, error) {
+func (sid ID) MarshalJSON() ([]byte, error) {
 	buff := make([]byte, 0, 22)
 	buff = append(buff, '"')
-	buff = strconv.AppendInt(buff, int64(f), 10)
+	buff = strconv.AppendInt(buff, int64(sid), 10)
 	buff = append(buff, '"')
 	return buff, nil
 }
 
 // UnmarshalJSON converts a json byte array of a snowflake ID into an ID type.
-func (f *ID) UnmarshalJSON(b []byte) error {
+func (sid *ID) UnmarshalJSON(b []byte) error {
 	if len(b) < 3 || b[0] != '"' || b[len(b)-1] != '"' {
 		return JSONSyntaxError{b}
 	}
@@ -342,13 +342,13 @@ func (f *ID) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	*f = ID(i)
+	*sid = ID(i)
 	return nil
 }
 
 // Time returns an int64 unix timestamp in milliseconds of the snowflake ID time
-func (f ID) Time() int64 {
-	return (int64(f) >> timestampShift) + epoch
+func (sid ID) Time() int64 {
+	return (int64(sid) >> timestampShift) + epoch
 }
 
 // GetTimestampMax Timestamp maximum

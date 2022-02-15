@@ -1,3 +1,3 @@
-module github.com/housemecn/snowflake
+module github.com/houseme/snowflake
 
-go 1.14
+go 1.16

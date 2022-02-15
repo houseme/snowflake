@@ -1,8 +1,8 @@
-# ❄️ GO-Snowflake
+# ❄️ Go-Snowflake
 
-[![Go Doc](https://godoc.org/github.com/housemecn/snowflake?status.svg)](https://godoc.org/github.com/housemecn/snowflake)
-[![Build Status](https://travis-ci.com/housemecn/snowflake.svg?branch=master)](https://travis-ci.com/housemecn/snowflake)
-[![Go Report](https://goreportcard.com/badge/github.com/housemecn/snowflake?v=1)](https://goreportcard.com/report/github.com/housemecn/snowflake)
+[![Go Reference](https://pkg.go.dev/badge/github.com/houseme/snowflake.svg)](https://pkg.go.dev/github.com/houseme/snowflake)
+[![GoFrame CI](https://github.com/houseme/snowflake/actions/workflows/gf.yml/badge.svg)](https://github.com/houseme/snowflake/actions/workflows/gf.yml)
+[![Go Report](https://goreportcard.com/badge/github.com/houseme/snowflake?v=1)](https://goreportcard.com/report/github.com/houseme/snowflake)
 [![Production Ready](https://img.shields.io/badge/production-ready-blue.svg)](https://github.com/housemecn/snowflake)
 [![License](https://img.shields.io/github/license/housemecn/snowflake.svg?style=flat)](https://github.com/housemecn/snowflake)
 
@@ -27,7 +27,7 @@ Twitter设计了Snowflake算法为分布式系统生成ID,Snowflake的id是int64
 ### 🕹 克隆 & 运行
 
 ```bash
-git clone https://github.com/housemecn/go-snowflake.git
+git clone https://github.com/houseme/snowflake.git
 
 go run ./.example/main.go
 ```
@@ -35,10 +35,11 @@ go run ./.example/main.go
 ### 💾 安装 & 导入
 
 ```bash
-go get github.com/housemecn/snowflake
-
+go get github.com/houseme/snowflake
+```
+```go
 // 在项目中导入模块
-import "github.com/housemecn/snowflake"
+import "github.com/houseme/snowflake"
 ```
 
 ### ⚠️注意事项
@@ -92,7 +93,7 @@ func TestLoad() {
 
 > 运行结果
 
-![load](https://github.com/housemecn/go-snowflake/raw/master/docs/WX20210314-234124@2x.png)
+![load](https://github.com/houseme/snowflake/raw/master/docs/WX20210314-234124@2x.png)
 
 ## 🗂 使用说明
 

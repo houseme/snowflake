@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/housemecn/snowflake"
+	"github.com/houseme/snowflake"
 )
 
 // TestLoad generate 20k ids
