@@ -93,7 +93,7 @@ func TestLoad() {
 
 > 运行结果
 
-![load](https://github.com/houseme/snowflake/raw/master/docs/WX20210314-234124@2x.png)
+![load](https://github.com/houseme/snowflake/raw/main/docs/WX20210314-234124@2x.png)
 
 ## 🗂 使用说明
 
