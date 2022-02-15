@@ -1,4 +1,4 @@
-# ❄️ Go Snowflake
+# ❄️ Go-Snowflake
 
 
 ### A Snowflake Generator for Go
